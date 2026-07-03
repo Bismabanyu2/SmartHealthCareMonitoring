@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "254957666535",
+    "project_id": "smarthealthmonitor-8918f",
+    "storage_bucket": "smarthealthmonitor-8918f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254957666535:android:cd6c09721221aa1657e242",
+        "android_client_info": {
+          "package_name": "com.example.smarthealtcaremonitoring"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuhv5Z8imHIK_Ix-3nOJSYDlURmVZkIB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
