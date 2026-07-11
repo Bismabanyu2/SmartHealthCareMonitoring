@@ -24,6 +24,13 @@ class _HomeScreenState extends State<HomeScreen> {
   String email = "";
   String role = "";
 
+  String healthTitle = "";
+  String healthMessage = "";
+  Color healthColor = Colors.green;
+
+  String healthTip = "";
+  IconData healthIcon = Icons.favorite;
+
   bool isLoading = true;
   Future<void> loadData() async {
     try {
@@ -56,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
         email = userDoc["email"];
         role = userDoc["role"];
         latestHealthData = data;
+        analyzeHealth();
         isLoading = false;
       });
 
@@ -64,6 +72,82 @@ class _HomeScreenState extends State<HomeScreen> {
       print("ERROR LOAD DATA");
       print(e);
       print(s);
+    }
+  }
+
+  void analyzeHealth() {
+    if (latestHealthData == null) return;
+
+    final heartRate = int.tryParse(latestHealthData!.heartRate) ?? 0;
+
+    final systolic = int.tryParse(latestHealthData!.systolic) ?? 0;
+
+    final diastolic = int.tryParse(latestHealthData!.diastolic) ?? 0;
+
+    final temperature = double.tryParse(latestHealthData!.temperature) ?? 0;
+
+    final weight = double.tryParse(latestHealthData!.weight) ?? 0;
+
+    // Default
+    healthTitle = "All Systems Normal";
+    healthMessage = "Your health metrics are looking great!";
+    healthColor = Colors.green;
+
+    healthTip =
+        "Maintain a balanced diet, exercise regularly, sleep at least 7–8 hours, and drink enough water every day.";
+
+    healthIcon = Icons.favorite;
+
+    if (temperature >= 38) {
+      healthTitle = "Possible Fever";
+      healthMessage = "Your body temperature is above normal.";
+      healthColor = Colors.red;
+      healthIcon = Icons.thermostat;
+
+      healthTip =
+          "Drink plenty of water, rest well, and seek medical attention if the fever continues.";
+    }
+
+    if (heartRate > 100) {
+      healthTitle = "High Heart Rate";
+      healthMessage = "Your heart rate is above normal.";
+      healthColor = Colors.orange;
+      healthIcon = Icons.monitor_heart;
+
+      healthTip =
+          "Take a short rest, avoid caffeine, stay hydrated, and monitor your heart rate again after 15 minutes.";
+    }
+
+    if (systolic >= 140 || diastolic >= 90) {
+      healthTitle = "High Blood Pressure";
+      healthMessage = "Please monitor your blood pressure.";
+      healthColor = Colors.red;
+
+      healthIcon = Icons.bloodtype;
+
+      healthTip =
+          "Reduce salty foods, avoid stress, drink enough water, and measure your blood pressure again later.";
+    }
+
+    if (weight < 45) {
+      healthTitle = "Low Body Weight";
+      healthMessage = "Consider improving your nutrition.";
+      healthColor = Colors.amber;
+
+      healthIcon = Icons.restaurant;
+
+      healthTip =
+          "Increase protein intake, eat nutritious meals regularly, and consult a nutritionist if necessary.";
+    }
+
+    if ((heartRate > 100 && systolic >= 140) || temperature >= 39) {
+      healthTitle = "Critical Condition";
+      healthMessage = "Multiple health indicators are abnormal.";
+      healthColor = Colors.red;
+      healthIcon = Icons.warning_amber;
+
+      healthTip =
+          "Please seek immediate medical attention or visit the nearest healthcare facility.";
     }
   }
 
@@ -155,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       vertical: screenHeight * 0.02,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.tealGreen,
+                      color: healthColor,
                       borderRadius: BorderRadius.circular(screenWidth * 0.04),
                     ),
                     child: Row(
@@ -171,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'All Systems Normal',
+                                healthTitle,
                                 style: TextStyle(
                                   color: AppColors.white,
                                   fontSize: screenWidth * 0.035,
@@ -179,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'Your health metrics are looking great!',
+                                healthMessage,
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.9),
                                   fontSize: screenWidth * 0.028,
@@ -409,10 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         SizedBox(height: screenHeight * 0.015),
-                        ...[
-                          'Drink at least 8 glasses of water',
-                          'Take a 30-minute walk after',
-                        ].map(
+                        ...[healthTip].map(
                           (tip) => Padding(
                             padding: EdgeInsets.only(
                               bottom: screenHeight * 0.01,
